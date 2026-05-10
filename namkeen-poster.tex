@@ -1,0 +1,146 @@
+\documentclass[a0paper,portrait]{baposter}
+
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage[helvet]{sfmath}
+\usepackage[T1]{fontenc}
+\usepackage{caption}
+\captionsetup{font=small,labelfont=bf}
+\usepackage{array,booktabs}
+\usepackage{pgfplots}
+\usepackage{amsmath,amssymb}
+\usepackage{enumitem}
+\usepackage{url}
+
+\selectcolormodel{RGB}
+\definecolor{brandBlue}{RGB}{0,70,120}
+\definecolor{brandBlueLight}{RGB}{112,110,140}
+\definecolor{posterBg}{RGB}{190,190,200}
+
+\setlist{topsep=0pt,noitemsep,labelindent=\parindent,leftmargin=*,font=\color{brandBlue}\normalfont}
+\setitemize[1]{label={\raise1.25pt\hbox{$\blacktriangleright$}}}
+\setitemize[2]{label={\scriptsize\raise1.25pt\hbox{$\blacktriangleright$}}}
+
+\addto{\captionsenglish}{%
+  \renewcommand{\refname}{\vspace{-0.7em}}%
+  \renewcommand{\figurename}{Fig.}%
+}
+
+\newcommand{\alert}[1]{{\color{brandBlue}#1}}
+
+\begin{document}
+
+\background{
+  \begin{tikzpicture}[remember picture,overlay]
+    \fill[fill=posterBg] (current page.north west) rectangle (current page.south east);
+    \fill[fill=brandBlue] (current page.north west) rectangle ([yshift=-\headerheight] current page.north east);
+  \end{tikzpicture}
+}
+
+\begin{poster}{
+  grid=false,
+  columns=3,
+  headerheight=0.1\textheight,
+  background=none,
+  eyecatcher=true,
+  headerborder=closed,
+  borderColor=brandBlue,
+  headershape=rectangle,
+  headershade=plain,
+  headerColorOne=brandBlue,
+  textborder=rectangle,
+  boxshade=plain,
+  boxColorOne=white,
+  headerFontColor=white,
+  headerfont=\Large\sf\bf,
+  linewidth=1pt
+}
+{\includegraphics[height=0.90\headerheight]{images/seecslogo.png}}
+{\color{brandBlue}\bf
+Quasi-3D Lumped-Parameter Thermal Model of\\
+Radial-Flux Motor Slots With Rigid PCB Windings
+}
+{\small
+Aymen Amara$^{1,2}$, Maxime Bonnet$^{1}$, Salim Asfirane$^{2}$, Georges Barakat$^{2}$, Ferhat Chabour$^{2}$\\[0.4em]
+$^{1}$ Mitsubishi Electric R\&D Centre Europe (MERCE), Rennes, France\\
+$^{2}$ Univ. Le Havre Normandie, GREAH Laboratory, Le Havre, France
+}
+{\includegraphics[height=0.75\headerheight]{images/nust-logo.png}}
+
+\begin{posterbox}[name=abstract,column=0,row=0]{Abstract \& Motivation}
+\begin{itemize}
+  \item Thermal behavior of stator slots is critical for machine predesign, especially with rigid PCB windings due to multilayer anisotropic materials.
+  \item We propose a \alert{quasi-3D lumped-parameter thermal model (LPTM)} with analytical homogenization of PCB multilayers.
+  \item The model includes temperature-dependent copper resistivity directly in the thermal network and is validated against FEMM/Flux3D finite-element simulations.
+\end{itemize}
+\end{posterbox}
+
+\begin{posterbox}[name=contrib,column=0,below=abstract]{Main Contributions}
+\begin{itemize}
+  \item Quasi-3D LPTM dedicated to radial-flux stator slots with rigid PCB windings.
+  \item Analytically calibrated homogenization for multilayer PCB winding stacks.
+  \item Non-iterative electro-thermal formulation integrating copper resistivity variation with temperature.
+\end{itemize}
+\end{posterbox}
+
+\begin{posterbox}[name=model,column=1,row=0]{LPTM Formulation}
+For each node, steady-state LPTM is written as:
+\begin{equation}
+  [G][\Delta T] = [\phi_{ext}]
+\end{equation}
+with
+\begin{equation}
+  [\Delta T]=[T]-T_{amb}[1],\quad
+  [\phi_{ext}]_i=\rho([\Delta T]_i)J^2v_{cu,i}
+\end{equation}
+\begin{equation}
+\rho([\Delta T]_i)=\rho_0\left(\alpha[\Delta T]_i + (1+\alpha(T_{amb}-T_0))[1]\right)
+\end{equation}
+Equivalent slot thermal conductivities are derived analytically in radial, tangential, and axial directions to represent multilayer copper/FR4/insulation stacks.
+\end{posterbox}
+
+\begin{posterbox}[name=homog,column=1,below=model]{Slot Homogenization \& 3D Extension}
+\begin{itemize}
+  \item In $(r,\theta)$ plane: anisotropic equivalent medium replaces explicit multilayer geometry.
+  \item In $z$ direction: equivalent conductivity from parallel heat paths through copper, FR4, and insulation.
+  \item 3D model is built by stacking 2D slices and coupling neighboring slices with axial resistances.
+  \item Node count scales as $N=n_r n_\theta n_z$.
+\end{itemize}
+\begin{center}
+  \includegraphics[width=0.75\linewidth]{images/polar_element_3D.png}
+  \captionof{figure}{3D cylindrical discretization concept used by the quasi-3D LPTM.}
+\end{center}
+\end{posterbox}
+
+\begin{posterbox}[name=validation,column=2,row=0]{Validation Setup}
+\begin{itemize}
+  \item 2D comparison against FEMM with slot sector boundary conditions: $T_{amb}=313$ K, convection on inner/outer radii, periodic lateral boundaries.
+  \item 3D model uses same $(r,\theta)$ conditions plus axial symmetry at $z=0$ and imposed temperature at $z=L_{stack}/2$.
+  \item Representative discretization: $60\times120\times10$ ($72{,}000$ elements) for LPTM; FE reference significantly larger.
+\end{itemize}
+\end{posterbox}
+
+\begin{posterbox}[name=results,column=2,below=validation]{Key Results}
+\begin{itemize}
+  \item 2D case (24 horizontal conductors): maximum temperature difference about \alert{4\%} vs FEA.
+  \item 3D case: axial gradient about \alert{67 K}, confirming need for 3D extension.
+  \item Hottest-region deviation around \alert{8 K} (about 11\% relative error).
+  \item Across current density sweep: maximum absolute deviation about \alert{10 K}; trend follows $J^2$ behavior.
+  \item Runtime: about \alert{1.5 s} (LPTM) vs \alert{180 s} (3D FEA), nearly 120$\times$ faster.
+\end{itemize}
+\end{posterbox}
+
+\begin{posterbox}[name=conclusion,column=0,span=3,below=contrib,above=bottom]{Conclusion \& Next Steps}
+\begin{itemize}
+  \item The proposed quasi-3D LPTM gives a strong speed/accuracy trade-off for predesign of rigid-PCB winding stator slots.
+  \item Analytical homogenization preserves anisotropic thermal physics while keeping model order manageable.
+  \item Future work: full-stator validation and experimental correlation.
+\end{itemize}
+\vspace{0.3em}
+\textbf{Suggested figures to add from your paper folder:} slot layered geometry, 2D FEMM vs LPTM map, 3D Flux temperature map, and current-density comparison curve.
+\end{posterbox}
+
+\end{poster}
+\end{document}
